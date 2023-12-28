@@ -144,5 +144,4 @@ export default class TodoList extends Vue {
 </script>
 
 <style scoped>
-/* Styles spécifiques au composant TodoList vont ici */
 </style>

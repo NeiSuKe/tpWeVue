@@ -1,8 +1,7 @@
-// Todo.ts
 export default class Todo {
   title: string;
   state: string;
-  dueDate?: Date; // Nouvelle propriété pour la date d'échéance
+  dueDate?: Date; 
 
   constructor(title: string, state: string, dueDate?: Date) {
     this.title = title;
