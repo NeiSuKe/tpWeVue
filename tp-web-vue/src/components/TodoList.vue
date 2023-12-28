@@ -6,6 +6,7 @@
     <div>
       <input v-model="newTaskTitle" placeholder="Nouvelle tâche" />
       <input type="date" v-model="newTaskDueDate" placeholder="Date" />
+      <input type="desc" v-model="newDesc" placeholder="Description" />
       <button @click="addTask">Ajouter</button>
     </div>
 
@@ -30,6 +31,9 @@
         <option value="En cours">En cours</option>
         <option value="Fait">Fait</option>
       </select>
+      <!-- Champs pour ajouter une sous liste-->
+      <input v-model="item" placeholder="Élément de sous-liste à ajouter" @keyup.enter="addSubList(task, item) " />
+      <br>
       <!-- Bouton de suppression pour chaque tâche -->
       <button @click="removeTask(task)">Supprimer</button>
     </div>
@@ -46,108 +50,133 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-facing-decorator';
-import TodoComponent from '@/components/TodoComponent.vue';
-import Todo from '@/todo';
+import { Component, Vue } from 'vue-facing-decorator'
+import TodoComponent from '@/components/TodoComponent.vue'
+import Todo from '@/todo'
 
 @Component({
   components: {
-    TodoComponent,
-  },
+    TodoComponent
+  }
 })
 export default class TodoList extends Vue {
-  tasks: Todo[] = [];
-  newTaskTitle: string = '';
-  currentFilter: string = 'all';
-  newTaskDueDate: string = '';
-  editingTask: Todo | null = null;
-  editedTaskTitle: string = '';
+  tasks: Todo[] = []
+  newTaskTitle: string = ''
+  currentFilter: string = 'all'
+  newTaskDueDate: string = ''
+  editingTask: Todo | null = null
+  editedTaskTitle: string = ''
+  newDesc: string = ''
+  item: string = ''
 
   // Méthode pour ajouter une nouvelle tâche
   addTask() {
     if (this.newTaskTitle.trim() !== '') {
-      if (this.newTaskDueDate !== '') {
-        const newTask = new Todo(this.newTaskTitle, 'À faire', new Date(this.newTaskDueDate));
-        this.tasks.push(newTask);
+      if (this.newTaskDueDate !== '' && this.newDesc !== '') {
+        const newTask = new Todo(
+          this.newTaskTitle,
+          'À faire',
+          new Date(this.newTaskDueDate),
+          this.newDesc,
+          []
+        )
+        this.tasks.push(newTask)
+      } else if (this.newTaskDueDate !== '') {
+        const newTask = new Todo(this.newTaskTitle, 'À faire', new Date(this.newTaskDueDate),undefined,[])
+        this.tasks.push(newTask)
+      } else if (this.newDesc !== '') {
+        const newTask = new Todo(this.newTaskTitle, 'À faire', undefined, this.newDesc,[])
+        this.tasks.push(newTask)
       } else {
-        const newTask = new Todo(this.newTaskTitle, 'À faire');
-        this.tasks.push(newTask);
+        const newTask = new Todo(this.newTaskTitle, 'À faire',undefined,undefined,[])
+        this.tasks.push(newTask)
       }
 
-      this.newTaskTitle = '';
-      this.newTaskDueDate = '';
+      this.newTaskTitle = ''
+      this.newTaskDueDate = ''
+      this.newDesc = ''
     }
+  }
+
+  // Méthode pour ajouter une nouvelle tâche
+  addSubList(taskToModify: Todo, item: string) {
+    if (item !== '') {
+      taskToModify.sublist?.push(item)
+    } else {
+      alert('Vous ne pouvez pas ajouer un élément vide.')
+    }
+    this.item = ''
   }
 
   // Méthode pour supprimer une tâche spécifique
   removeTask(taskToRemove: Todo) {
-    this.tasks = this.tasks.filter(task => task !== taskToRemove);
+    this.tasks = this.tasks.filter((task) => task !== taskToRemove)
   }
 
   // Méthode pour supprimer toutes les tâches
   clearTasks() {
-    this.tasks = [];
+    this.tasks = []
   }
 
   // Méthode pour supprimer les tâches terminées
   removeCompletedTasks() {
-    this.tasks = this.tasks.filter(task => task.state !== 'Fait');
+    this.tasks = this.tasks.filter((task) => task.state !== 'Fait')
   }
 
   // Méthode pour commencer l'édition d'une tâche
   startEditing(task: Todo) {
-    this.editingTask = task;
-    this.editedTaskTitle = task.title;
+    this.editingTask = task
+    this.editedTaskTitle = task.title
   }
 
   // Méthode pour arrêter l'édition d'une tâche
   stopEditing() {
-    this.editingTask = null;
+    this.editingTask = null
   }
 
   // Méthode pour mettre à jour le titre d'une tâche en cours d'édition
   updateTaskTitle(task: Todo) {
-    task.title = this.editedTaskTitle;
-  setTimeout(() => {
-    this.editingTask = null;  // Réinitialiser l'édition après la mise à jour
-  }, 0);
+    task.title = this.editedTaskTitle
+    setTimeout(() => {
+      this.editingTask = null // Réinitialiser l'édition après la mise à jour
+    }, 0)
   }
 
   // Méthode pour mettre à jour l'état d'une tâche
   updateTaskState(task: Todo) {
-    console.log(`La tâche "${task.title}" est maintenant à l'état "${task.state}"`);
+    console.log(`La tâche "${task.title}" est maintenant à l'état "${task.state}"`)
   }
 
   // Propriété calculée pour obtenir le nombre de tâches restantes
   get remainingTasks(): number {
-    return this.tasks.filter(task => task.state === 'À faire').length;
+    return this.tasks.filter((task) => task.state === 'À faire').length
   }
 
   // Propriété calculée pour obtenir les tâches en fonction du filtre actuel
   get filteredTasks(): Todo[] {
     if (this.currentFilter === 'all') {
-      return this.tasks;
+      return this.tasks
     } else if (this.currentFilter === 'todo') {
-      return this.tasks.filter(task => task.state === 'À faire');
+      return this.tasks.filter((task) => task.state === 'À faire')
     } else if (this.currentFilter === 'done') {
-      return this.tasks.filter(task => task.state === 'Fait');
+      return this.tasks.filter((task) => task.state === 'Fait')
     } else {
-      return [];
+      return []
     }
   }
 
   // Méthode pour définir le filtre actuel
   setFilter(filter: string) {
-    this.currentFilter = filter;
+    this.currentFilter = filter
   }
 }
 </script>
 
 <style scoped>
-h1.todo{
+h1.todo {
   color: azure;
 }
 
-div{
+div {
 }
 </style>
