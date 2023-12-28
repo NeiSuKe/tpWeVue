@@ -3,8 +3,9 @@ import { RouterLink, RouterView } from 'vue-router'
 </script>
 
 <template>
-  <header>
+  <header> 
     <div class="wrapper">
+      <h1 class="app">Projet de TodoList.</h1>
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
@@ -19,6 +20,11 @@ import { RouterLink, RouterView } from 'vue-router'
 header {
   line-height: 1.5;
   max-height: 100vh;
+}
+
+h1.app{
+  color: azure;
+  text-decoration: underline;
 }
 
 .logo {

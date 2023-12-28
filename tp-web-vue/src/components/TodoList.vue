@@ -1,6 +1,6 @@
 <template>
   <div class="todolist">
-    <h1>Todos</h1>
+    <h1 class="todo">Todos</h1>
 
     <!-- Champ d'entrée et bouton pour ajouter une nouvelle tâche -->
     <div>
@@ -144,5 +144,10 @@ export default class TodoList extends Vue {
 </script>
 
 <style scoped>
-/* Styles spécifiques au composant TodoList vont ici */
+h1.todo{
+  color: azure;
+}
+
+div{
+}
 </style>

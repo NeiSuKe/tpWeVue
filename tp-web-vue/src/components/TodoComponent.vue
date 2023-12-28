@@ -16,4 +16,14 @@ export default class TodoComponent extends Vue {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+div.todo{
+  border: 1cm;
+  background-color: rgba(92, 90, 90, 0.3);
+  
+}
+h2{
+  color: ghostwhite;
+  font-family: Arial, Helvetica, sans-serif;
+}
+</style>

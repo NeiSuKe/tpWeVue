@@ -1,14 +1,4 @@
 <template>
-  <div class="Home">
-    <p v-if="visible">Maintenant vous me voyez {{ message }}</p>
-    <button v-on:click="foo()">ok</button>
-    <div v-background>
-      Ce texte a un fond jaune.
-    </div>
-    <div v-background:green>
-      Ce texte a un fond vert.
-    </div>
-  </div>
   <TodoList />
 </template>
 
